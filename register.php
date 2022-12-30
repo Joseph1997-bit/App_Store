@@ -7,7 +7,7 @@ if(isset($_SESSION['login']) && $_SESSION['login'] != "") {
     exit();
 }
 
-include_once 'includes/functons.php';//eger dosya yoksa islem devam eder ve uyari veiri dosya varsa bi daha yuklemez/cagirmaz
+//include_once 'includes/functons.php';//eger dosya yoksa islem devam eder ve uyari veiri dosya varsa bi daha yuklemez/cagirmaz
 global $connect;
 
 
@@ -92,7 +92,7 @@ if(checkUser($username)) {
                     <h1> Register</h1>
                 </div><br/><br/>
                 <div class="container">
-                    <form action="" method="post" >
+                    <form  method="post" >
                         <!--        userName-->
                         <div class="form-outline mb-3">
                             <input type="text" id="username" name="username" class="form-control form-control-lg"

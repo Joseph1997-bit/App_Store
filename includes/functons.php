@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection ALL */
 include ('includes/db.php');
 
 
@@ -41,7 +41,7 @@ function checkEmail($email) {
     $sql="SELECT * FROM `users` WHERE `mail` = '$email' ";
     mysqli_query($connect,$sql);
 
-    if(mysqli_affected_rows($connect) > 0 ) {//eger sonuc sayisi 0'dan buyukse hata varve bu mail daha once varmis demeki degilse hata verir
+    if(mysqli_affected_rows($connect) > 0 ) {//eger sonuc sayisi 0'dan buyukse hata var ve bu mail daha once varmis demeki degilse hata verir
         return true;
     } else{
         return false;
@@ -60,7 +60,7 @@ function checkPassword($password) {
 }
 
 //1.params dosyanin gecici yeri,2.si dosyanin nerye yukleyecgimiz belirler,3.su sectigimiz dosya/gelen dosya,4.su dosya turu,4.ve5. fotonun  genislik ve uzunluk
-function create_thumb($file_Temp, $newName, $type, $width, $height){
+/*function create_thumb($file_Temp, $newName, $type, $width, $height){
     if(!strcmp("image/jpg",$type) || !strcmp("image/jpeg",$type) || !strcmp("image/pjpeg",$type))
         $src_img=imagecreatefromjpeg($file_Temp);
 
@@ -121,14 +121,15 @@ function create_thumb($file_Temp, $newName, $type, $width, $height){
 
     imagedestroy($dst_img);
     imagedestroy($src_img);
-}
-function getFileExtension($str) {
+}*/
+
+/*function getFileExtension($str) {
     $i = strrpos($str,".");
     if (!$i) { return ""; }
     $l = strlen($str) - $i;
     $ext = substr($str,$i+1,$l);
     return $ext;
-}
+}*/
 
 /*function check($title,$version){
     global $connect;

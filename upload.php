@@ -4,10 +4,11 @@ if(!isset( $_SESSION['login']) && $_SESSION['login'] == "") {//login islemi notS
     header("Location:login.php");
     exit();
 }
-
+global $connect;
+$fromoFile ='';
 //button submit icindeki name adi upload oldugu icin post icinde upload yazdik buttoni bastiktan sonra form tagi icndeki bilgiler buraya gelir
 if(isset($_POST['upload'])) {
-    $error = false; //bi degisken tanimliyoz degeri false olsu onu kullanark hata olup olmadigini kontrol edebiliriz
+    $error = false; //bi degisken tanimliyoz degeri false olsun onu kullanark hata olup olmadigini kontrol edebiliriz
     $msg='';
     $uploadDir =' uploads/';//yukledigmiz dosyalar bu degiskene atacz
     $picsExt = array('gif', 'jpg', 'jpeg', 'png', 'bmp');//fotolarin uzantilari
@@ -31,10 +32,10 @@ if(isset($_POST['upload'])) {
         } else {//eger hata yoksa title ve zaman bilgiler ve dosyanin uzantisi/extion yazack
             $iconFile = $appTitle . '_' . $hash . '.' . $fileExt;
         }
-    } /*else {
+    } else {
         $error = true;
         $msg .= '<li>You forget to upload Icon</li>';
-    }*/
+    }
 
     if (!empty($_FILES['apppromo']['name'])) {//her yuklene dosyadan 4 tane bilgi alacz
         $promoName = $_FILES['apppromo']['name'];//adi
@@ -61,23 +62,30 @@ if(isset($_POST['upload'])) {
             $error = true;
             $msg .= 'Wrong Extenstion File';
         }
-        else{  $apkFile = $appTitle . '_' . $hash . '.' . $apkExt;}
+          $apkFile = $appTitle . '_' . $hash . '.' . $apkExt;
 
-    } /*else {
+    } else {
         $error = true;
         $msg .= '<li>You forget to Upload APK File</li>';
-    }*/
+    }
 //butun bosluklari doldurduktan sonra ve herhangi bi hata yoksa bu islemleri yapcz
     if ($error == false) {
         //fotolar icin bi fonks hazirladik 1.params dosyanin gecici yeri,2.si dosyanin nerye yukleyecgimiz belirler,3.su sectigimiz dosya/gelen dosya,4.su dosya turu,4.ve5. fotonun  genislik ve uzunluk
-     /*  create_thumb($fileTmp, $uploadDir, $iconFile, $fileType, 512, 512);
+     /* create_thumb($fileTmp, $uploadDir, $iconFile, $fileType, 512, 512);
         create_thumb($promoTmp, $uploadDir, $promoFile, $promoType, 1200, 300);*/
         //dosya/uygulama yuklemek icin bu fonksu kullanacz
-        move_uploaded_file(isset($apkTmp), $uploadDir .isset($apkFile) );//1.params dosyanin geci yeri alir,2.si uygulamanin yeni bilgileri/kendisi ve path tutan degiskeni alir,3.su dosyanin yeni adi/title   ve Extion bilgiler
-        echo '<div class="alert alert-dismissable alert-success">
+        move_uploaded_file($apkTmp, $uploadDir .$apkFile );//1.params dosyanin geci yeri alir,2.si uygulamanin yeni bilgileri/kendisi ve path tutan degiskeni alir,3.su dosyanin yeni adi/title   ve Extion bilgiler
+$userId=$_SESSION['userid'];
+
+        $sql="INSERT INTO `files` ( `file_title`, `file_desc`, `file_icon`, `file_promo`, `file_version`, `file_date`, `file_cat`, `file_uploader`, `file_path`, `file_active`) VALUES ( '$title', '$desc', '$iconFile', '$fromoFile', '$version', '$time', '$cat', '$userId', '$apkFile', '0')";
+       mysqli_query($connect,$sql);
+        if(mysqli_affected_rows($connect)>0) {
+            echo '<div class="alert alert-dismissable alert-success">
        <strong>Well done! Wait for admin Approval</strong>
        Registration is complete
          </div>';
+        }
+
 
     }
 
@@ -98,16 +106,16 @@ if(isset($_POST['upload'])) {
 
         <div class="col-md-6 container-fluid ">
 
-            <form action="" class="mt-4 p-5 bg-light text-white rounded" method="post">
-                <fieldset>
+            <form action=""  class="mt-4 p-5 bg-light text-white rounded" method="post " >
+
                 <div class="form-group ">
                     <label for="apptitle" class="form-label "><p style="color:black">App Title :</p></label>
-                    <input type="text" class="form-control" id="apptitle" name="apptitle" placeholder="Enter App Tıtle" >
+                    <input type="text" class="form-control" id="apptitle" name="apptitle" placeholder="Enter App Tıtle" required >
                 </div>
                 <br/>
                 <div class="form-group">
                     <label for="appdesc" class="form-label"><p style="color:black">App Description :</p></label>
-                    <textarea  class="form-control" id="appdesc"  name="appdesc"> </textarea>
+                    <textarea  class="form-control" id="appdesc"  name="appdesc" required> </textarea>
                 </div>
                 <br/>
 
@@ -116,26 +124,26 @@ if(isset($_POST['upload'])) {
 
                     <!--readOnly ozelligi yazinca input icinde herhangi bi sey yazamiyoz-->
                     <input readonly="" class="form-control" placeholder="Browse..." type="text">
-                    <input class="form-control" id="appicon" name="appicon"  type="file"  >
+                    <input class="form-control" id="appicon" name="appicon"  type="file" required >
                 </div>
                 <br/>
                 <div class="form-group ">
                     <label for="apppromo" class="form-label "><p style="color:black">Promo Picture :</p></label>
 
                     <input readonly="" class="form-control" placeholder="Browse..." type="text">
-                    <input class="form-control" id="apppromo" name="apppromo"  type="file"  >
+                    <input class="form-control" id="apppromo" name="apppromo"  type="file" required  >
                 </div> <br/>
                 <div class="form-group ">
                     <label for="appfile" class="form-label "><p style="color:black">APK File :</p></label>
                      <!-- readOnly ozelligi yazinca input icinde herhangi bi sey yazamiyoz sadece okumak icin bi input/text kalir-->
                     <input readonly="" class="form-control" placeholder="Browse..." type="text">
-                    <input class="form-control" id="appfile" name="appfile" type="file"  >
+                    <input class="form-control" id="appfile" name="appfile" type="file" required >
                 </div> <br/>
 
                 <div class="form-group ">
                     <label for="appversion" class="form-label "><p style="color:black">App Version :</p></label>
 
-                    <input id="appversion" name="appversion" class="form-control" placeholder="Enter App Version" type="text">
+                    <input id="appversion" name="appversion" class="form-control" placeholder="Enter App Version" type="text" required>
 
                 </div>
                 <br/>
@@ -162,7 +170,7 @@ if(isset($_POST['upload'])) {
                 </div>
                <br/>
                 <input type="submit" class="btn btn-info btn-outline-success" value="Upload" name="upload">
-             </fieldset>
+
             </form>
 
         </div>

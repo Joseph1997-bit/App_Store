@@ -14,11 +14,13 @@ if(isset($_POST['login'])) {
     $password = md5($_POST['password']); //kayit yaparken numaralar/password md5 ile sifreledik o yuzden burda login yapmak icin kullanmamiz lazim
 //eger input'tan gelen username ve password dogru ise Basarıyla giris yaptiniz
     $sql = "SELECT * FROM  `users` WHERE  `user_name` = '$username' AND `user_pass` = '$password' ";//bu islem gelen bilgileri data'da olup olmadigini kontrol eder
-    mysqli_query($connect, $sql);
-    if (mysqli_affected_rows($connect) > 0) {
-        $_SESSION['login'] =$username;//kullanici adi server/sunucuda saklanip baska yerde kullanmak icin
+  $q=  mysqli_query($connect, $sql);
 
-        header('Location:index.php');//dogru bi sekilde giris yaptiktan sonra homePage' acar/gotureck
+    if (mysqli_affected_rows($connect) == 1) {// sadece bi tane sonuc dondurmeli yoksa hata var
+     $data=mysqli_fetch_assoc($q);
+        $_SESSION['login'] =$data['user_name'];//kullanici adi server/sunucuda saklanip baska yerde kullanmak icin
+        $_SESSION['userid']=$data['user_id'];
+        header('Location:home.php');//dogru bi sekilde giris yaptiktan sonra homePage' acar/gotureck
 
     } else {
         echo '<div class="alert alert-danger navbar ">
@@ -39,7 +41,7 @@ if(isset($_POST['login'])) {
                 <div class="container-fluid" style="background-color: #e3f2fd;">
 
         <br/><br/>
-                    <form action="" method="post"  >
+                    <form action="" method="post"  > <!--action ozelligi bos olnuca demeki bilgileri ayni sayfaya gonderck-->
 
                         <!--        userName-->
                         <div class="form-outline mb-3">
@@ -57,7 +59,7 @@ if(isset($_POST['login'])) {
 
                         <br/>
                         <div class="d-grid gap-2 col-6 mx-auto ">
-                            <input type="submit" class="btn  btn-primary btn-block" name="login" value="LogIn"/>
+                            <input type="submit" class="btn  btn-primary btn-block" name="login" value="LogIn"/> <!--burda value demeki button icindeki kelime/adu-->
                         </div>
                         <br/>
                     </form>
